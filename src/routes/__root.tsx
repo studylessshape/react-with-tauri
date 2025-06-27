@@ -1,3 +1,4 @@
+import { MoonOutlined, SunFilled, SunOutlined } from "@ant-design/icons";
 import {
     createRootRoute,
     Outlet,
@@ -7,7 +8,17 @@ import {
     useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Flex, Layout, Menu } from "antd";
+import { useTheme } from "ahooks";
+import { ThemeMode } from "ahooks/lib/useTheme";
+import {
+    App,
+    Button,
+    ConfigProvider,
+    Flex,
+    Layout,
+    Menu,
+    theme as AntdTheme,
+} from "antd";
 import { ItemType, MenuItemType } from "antd/es/menu/interface";
 import { useMemo } from "react";
 
@@ -33,27 +44,60 @@ function RootComponent() {
             } as ItemType<MenuItemType>;
         });
     }, [router.routesByPath]);
+    const { theme, themeMode, setThemeMode } = useTheme({
+        localStorageKey: "theme",
+    });
+    const themeIcon = useMemo(() => {
+        if (themeMode == ThemeMode.SYSTEM) {
+            return <SunFilled></SunFilled>;
+        } else {
+            return themeMode == ThemeMode.LIGHT
+                ? <SunOutlined></SunOutlined>
+                : <MoonOutlined></MoonOutlined>;
+        }
+    }, [themeMode]);
+    const themeAligorithm = useMemo(() => {
+        if (theme == "dark") {
+            return AntdTheme.darkAlgorithm;
+        } else {
+            return AntdTheme.defaultAlgorithm;
+        }
+    }, [theme]);
 
     return (
-        <>
-            <Flex style={{ height: "100vh", width: "100vw" }}>
-                <Layout>
+        <ConfigProvider theme={{ algorithm: themeAligorithm }}>
+            <App>
+                <Flex style={{ height: "100vh", width: "100vw" }}>
                     <Layout>
-                        <Sider collapsible>
-                            <Menu
-                                theme="dark"
-                                selectedKeys={[location.pathname]}
-                                items={menuItems}
-                            >
-                            </Menu>
-                        </Sider>
-                        <Content style={{ overflow: "auto" }}>
-                            <Outlet />
-                        </Content>
+                        <Layout>
+                            <Sider collapsible theme="light">
+                                <Button
+                                    type="text"
+                                    icon={themeIcon}
+                                    onClick={() => {
+                                        setThemeMode(
+                                            themeMode == ThemeMode.SYSTEM
+                                                ? ThemeMode.LIGHT
+                                                : themeMode == ThemeMode.LIGHT
+                                                ? ThemeMode.DARK
+                                                : ThemeMode.SYSTEM,
+                                        );
+                                    }}
+                                >
+                                </Button>
+                                <Menu
+                                    selectedKeys={[location.pathname]}
+                                    items={menuItems}
+                                />
+                            </Sider>
+                            <Content style={{ overflow: "auto" }}>
+                                <Outlet />
+                            </Content>
+                        </Layout>
                     </Layout>
-                </Layout>
-                <TanStackRouterDevtools position="bottom-right" />
-            </Flex>
-        </>
+                    <TanStackRouterDevtools position="bottom-right" />
+                </Flex>
+            </App>
+        </ConfigProvider>
     );
 }
