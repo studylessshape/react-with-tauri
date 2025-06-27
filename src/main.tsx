@@ -20,6 +20,7 @@ declare module "@tanstack/react-router" {
   interface StaticDataRouteOption {
     name?: String;
     icon?: React.ReactNode;
+    order?: number,
   }
 }
 
