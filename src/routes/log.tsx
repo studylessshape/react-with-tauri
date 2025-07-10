@@ -57,8 +57,8 @@ function RouteComponent() {
             <div>Hello "/log"!</div>
             <div>Hello "/log"!</div>
             <div>Hello "/log"!</div>
-            <div>Hello "/log"!</div>
-            <div>Hello "/log"!</div>
+            <div>Hello "/log endbefore"!</div>
+            <div>Hello "/log end"!</div>
         </div>
     );
 }

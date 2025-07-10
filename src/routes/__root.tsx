@@ -14,6 +14,7 @@ import { useMemo } from "react";
 import { CustomProvider, IconButton, Stack, Tooltip, Whisper } from "rsuite";
 import { Container, Content, Footer, Header, Sidebar } from "rsuite";
 import { Nav, Sidenav } from "rsuite";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 
 export const Route = createRootRoute({
     component: RootComponent,
@@ -75,18 +76,28 @@ function RootComponent() {
                         borderRightColor: "#8080805e",
                         borderRightStyle: "solid",
                     }}
+                    collapsible
                 >
-                    <Sidenav
-                        expanded={false}
+                    <OverlayScrollbarsComponent
                         style={{ flexGrow: 1 }}
-                        appearance="subtle"
+                        options={{
+                            scrollbars: {
+                                theme: "os-theme-light",
+                                autoHide: "leave",
+                            },
+                        }}
                     >
-                        <Sidenav.Body>
-                            <Nav defaultActiveKey="/server">
-                                {menuItems}
-                            </Nav>
-                        </Sidenav.Body>
-                    </Sidenav>
+                        <Sidenav
+                            expanded={false}
+                            appearance="subtle"
+                        >
+                            <Sidenav.Body>
+                                <Nav activeKey={location.pathname}>
+                                    {menuItems}
+                                </Nav>
+                            </Sidenav.Body>
+                        </Sidenav>
+                    </OverlayScrollbarsComponent>
                     <Stack
                         justifyContent="center"
                         direction="column"
@@ -96,29 +107,31 @@ function RootComponent() {
                         <Whisper
                             placement="top"
                             trigger="hover"
-                            speaker={<Tooltip>二维码</Tooltip>}
-                        >
-                            <IconButton
-                                appearance="subtle"
-                                icon={<QrcodeIcon />}
-                            />
-                        </Whisper>
-                        <Whisper
-                            placement="top"
-                            trigger="hover"
                             speaker={<Tooltip>Github</Tooltip>}
                         >
                             <IconButton
                                 appearance="subtle"
                                 icon={<GithubIcon />}
+                                onClick={() => {
+                                    window.open("https://github.com/studylessshape/react-with-tauri")
+                                }}
                             />
                         </Whisper>
                     </Stack>
                 </Sidebar>
-
-                <Content style={{ overflow: "auto", flexGrow: 1 }}>
-                    <Outlet />
-                </Content>
+                <OverlayScrollbarsComponent
+                    style={{ flexGrow: 1 }}
+                    options={{
+                        scrollbars: {
+                            visibility: "auto",
+                            theme: "os-theme-light",
+                        },
+                    }}
+                >
+                    <Content>
+                        <Outlet />
+                    </Content>
+                </OverlayScrollbarsComponent>
                 <TanStackRouterDevtools position="bottom-right" />
             </Container>
         </CustomProvider>

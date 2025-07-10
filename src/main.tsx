@@ -1,7 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./main.css";
-import 'rsuite/dist/rsuite.min.css';  // or 'rsuite/styles/index.less';
+import "rsuite/styles/index.less";
+
+import "overlayscrollbars/overlayscrollbars.css";
+import "allotment/dist/style.css";
 
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 
@@ -20,7 +23,7 @@ declare module "@tanstack/react-router" {
   interface StaticDataRouteOption {
     name?: string | undefined;
     icon?: React.ReactElement<IconProps>;
-    order?: number,
+    order?: number;
   }
 }
 
