@@ -1,13 +1,13 @@
-import React, { useMemo } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { App as AntdApp, ConfigProvider, theme as AntdTheme } from "antd";
 import "./main.css";
+import 'rsuite/dist/rsuite.min.css';  // or 'rsuite/styles/index.less';
 
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
-import { useTheme } from "ahooks";
+import { IconProps } from "@rsuite/icons/esm/Icon";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -18,8 +18,8 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
   interface StaticDataRouteOption {
-    name?: String;
-    icon?: React.ReactNode;
+    name?: string | undefined;
+    icon?: React.ReactElement<IconProps>;
     order?: number,
   }
 }

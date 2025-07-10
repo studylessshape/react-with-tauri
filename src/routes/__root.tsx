@@ -1,4 +1,6 @@
-import { MoonOutlined, SunFilled, SunOutlined } from "@ant-design/icons";
+import GearIcon from "@rsuite/icons/Gear";
+import QrcodeIcon from "@rsuite/icons/Qrcode";
+import GithubIcon from "../components/icons/Github";
 import {
     createRootRoute,
     Outlet,
@@ -8,21 +10,10 @@ import {
     useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { useTheme } from "ahooks";
-import { ThemeMode } from "ahooks/lib/useTheme";
-import {
-    App,
-    Button,
-    ConfigProvider,
-    Flex,
-    Layout,
-    Menu,
-    theme as AntdTheme,
-} from "antd";
-import { ItemType, MenuItemType } from "antd/es/menu/interface";
 import { useMemo } from "react";
-
-const { Sider, Content } = Layout;
+import { CustomProvider, IconButton, Stack, Tooltip, Whisper } from "rsuite";
+import { Container, Content, Footer, Header, Sidebar } from "rsuite";
+import { Nav, Sidenav } from "rsuite";
 
 export const Route = createRootRoute({
     component: RootComponent,
@@ -47,89 +38,89 @@ function RootComponent() {
             }
             return aIndex - bIndex;
         }).map((route) => {
-            return {
-                key: route.fullPath.toString(),
-                icon: route.options.staticData?.icon,
-                label: route.options.staticData?.name,
-                onClick: () => navigate({ to: route.fullPath.toString() }),
-            } as ItemType<MenuItemType>;
+            return (
+                <Nav.Item
+                    key={route.fullPath}
+                    eventKey={route.fullPath}
+                    icon={route.options.staticData?.icon}
+                    onClick={() => {
+                        navigate({ to: route.fullPath.toString() });
+                    }}
+                >
+                    {route.options.staticData?.name}
+                </Nav.Item>
+            );
         });
     }, [router.routesByPath]);
-    const { theme, themeMode, setThemeMode } = useTheme({
-        localStorageKey: "theme",
-    });
-    const themeIcon = useMemo(() => {
-        if (themeMode == ThemeMode.SYSTEM) {
-            return <SunFilled></SunFilled>;
-        } else {
-            return themeMode == ThemeMode.LIGHT
-                ? <SunOutlined></SunOutlined>
-                : <MoonOutlined></MoonOutlined>;
-        }
-    }, [themeMode]);
-    const themeAligorithm = useMemo(() => {
-        if (theme == "dark") {
-            return AntdTheme.darkAlgorithm;
-        } else {
-            return AntdTheme.defaultAlgorithm;
-        }
-    }, [theme]);
 
     return (
-        <ConfigProvider
-            theme={{
-                components: {
-                    Menu: {
-                        collapsedWidth: 10,
-                        collapsedIconSize: 20,
-                    },
-                },
-                algorithm: themeAligorithm,
-            }}
-            virtual={true}
-        >
-            <App>
-                <Flex style={{ height: "100vh", width: "100vw" }}>
-                    <Layout>
-                        <Layout>
-                            <Sider collapsed={true} theme="light">
-                                <Menu
-                                    selectedKeys={[location.pathname]}
-                                    items={[
-                                        {
-                                            key: "..",
-                                            icon: themeIcon,
-                                            label: themeMode,
-                                            onClick: () => {
-                                                setThemeMode(
-                                                    themeMode ==
-                                                            ThemeMode.SYSTEM
-                                                        ? ThemeMode.LIGHT
-                                                        : themeMode ==
-                                                                ThemeMode.LIGHT
-                                                        ? ThemeMode.DARK
-                                                        : ThemeMode.SYSTEM,
-                                                );
-                                            },
-                                        },
-                                        ...menuItems,
-                                    ]}
-                                />
-                            </Sider>
-                            <Content
-                                style={{
-                                    overflow: "auto",
-                                    height: "100%",
-                                    width: "100%",
-                                }}
-                            >
-                                <Outlet />
-                            </Content>
-                        </Layout>
-                    </Layout>
-                    <TanStackRouterDevtools position="bottom-right" />
-                </Flex>
-            </App>
-        </ConfigProvider>
+        <CustomProvider theme="dark">
+            <Container
+                style={{
+                    height: "100vh",
+                    width: "100vw",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "row",
+                }}
+            >
+                <Sidebar
+                    style={{
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "fit-content",
+                        flex: "",
+                        borderRightWidth: 2,
+                        borderRightColor: "#8080805e",
+                        borderRightStyle: "solid",
+                    }}
+                >
+                    <Sidenav
+                        expanded={false}
+                        style={{ flexGrow: 1 }}
+                        appearance="subtle"
+                    >
+                        <Sidenav.Body>
+                            <Nav defaultActiveKey="/server">
+                                {menuItems}
+                            </Nav>
+                        </Sidenav.Body>
+                    </Sidenav>
+                    <Stack
+                        justifyContent="center"
+                        direction="column"
+                        style={{ marginBottom: 10 }}
+                    >
+                        <IconButton appearance="subtle" icon={<GearIcon />} />
+                        <Whisper
+                            placement="top"
+                            trigger="hover"
+                            speaker={<Tooltip>二维码</Tooltip>}
+                        >
+                            <IconButton
+                                appearance="subtle"
+                                icon={<QrcodeIcon />}
+                            />
+                        </Whisper>
+                        <Whisper
+                            placement="top"
+                            trigger="hover"
+                            speaker={<Tooltip>Github</Tooltip>}
+                        >
+                            <IconButton
+                                appearance="subtle"
+                                icon={<GithubIcon />}
+                            />
+                        </Whisper>
+                    </Stack>
+                </Sidebar>
+
+                <Content style={{ overflow: "auto", flexGrow: 1 }}>
+                    <Outlet />
+                </Content>
+                <TanStackRouterDevtools position="bottom-right" />
+            </Container>
+        </CustomProvider>
     );
 }

@@ -1,6 +1,6 @@
-import { createFromIconfontCN } from "@ant-design/icons";
+import { createIconFont } from '@rsuite/icons';
 
-const IconFont = createFromIconfontCN({
+const IconFont = createIconFont({
     scriptUrl: "/iconfont.js",
 });
 
