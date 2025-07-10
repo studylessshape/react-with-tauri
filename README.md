@@ -9,5 +9,4 @@ This template should help get you started developing with Tauri, React and Types
 ## Framwork
 
 - [TanStack Router](https://tanstack.com/router)
-- [Ant-Design](https://ant.design/) ([中国镜像](https://ant-design.antgroup.com/))
-  - [ahooks](https://alibaba.github.io/)
+- [Rsuite](https://rsuitejs.com/)
