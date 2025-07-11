@@ -14,7 +14,7 @@
     "@tanstack/react-router": "^1.125.6",
     "@tanstack/react-router-devtools": "^1.125.6",
     "@tauri-apps/api": "^2.6.0",
-    "@tauri-apps/plugin-opener": "^2.4.0",
+    "@tauri-apps/plugin-opener": "~2",
     "allotment": "^1.20.4",
     "overlayscrollbars": "^2.11.4",
     "overlayscrollbars-react": "^0.5.6",

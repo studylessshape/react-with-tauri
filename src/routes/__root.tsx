@@ -1,5 +1,4 @@
 import GearIcon from "@rsuite/icons/Gear";
-import QrcodeIcon from "@rsuite/icons/Qrcode";
 import GithubIcon from "../components/icons/Github";
 import {
     createRootRoute,
@@ -15,6 +14,7 @@ import { CustomProvider, IconButton, Stack, Tooltip, Whisper } from "rsuite";
 import { Container, Content, Footer, Header, Sidebar } from "rsuite";
 import { Nav, Sidenav } from "rsuite";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import { openUrl } from "@tauri-apps/plugin-opener";
 
 export const Route = createRootRoute({
     component: RootComponent,
@@ -102,6 +102,7 @@ function RootComponent() {
                         justifyContent="center"
                         direction="column"
                         style={{ marginBottom: 10 }}
+                        spacing={10}
                     >
                         <IconButton appearance="subtle" icon={<GearIcon />} />
                         <Whisper
@@ -112,8 +113,9 @@ function RootComponent() {
                             <IconButton
                                 appearance="subtle"
                                 icon={<GithubIcon />}
-                                onClick={() => {
-                                    window.open("https://github.com/studylessshape/react-with-tauri")
+                                onClick={async () => {
+                                    const githubUrl = "https://github.com/studylessshape/react-with-tauri";
+                                    await openUrl(githubUrl).catch(_ => window.open(githubUrl));
                                 }}
                             />
                         </Whisper>

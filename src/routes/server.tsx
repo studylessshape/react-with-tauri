@@ -32,7 +32,7 @@ function RouteComponent() {
                             display: "flex",
                             borderTop: "solid grey",
                             borderTopWidth: 1,
-                            marginBottom: 1
+                            marginBottom: 1,
                         }}
                     >
                         <IconButton
@@ -78,7 +78,9 @@ function RouteComponent() {
                     </div>
                 </div>
             </Allotment.Pane>
-            <div>Right</div>
+            <Allotment.Pane minSize={300}>
+                <div>Right</div>
+            </Allotment.Pane>
         </Allotment>
     );
 }
