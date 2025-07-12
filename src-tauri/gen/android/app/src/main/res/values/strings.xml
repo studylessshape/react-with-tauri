@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">react-with-tauri</string>
+    <string name="main_activity_title">react-with-tauri</string>
+</resources>

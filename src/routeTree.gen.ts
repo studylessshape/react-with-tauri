@@ -9,68 +9,68 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ServerRouteImport } from './routes/server'
-import { Route as LogRouteImport } from './routes/log'
+import { Route as PickerRouteImport } from './routes/picker'
+import { Route as GamePathRouteImport } from './routes/game.$path'
 
-const ServerRoute = ServerRouteImport.update({
-  id: '/server',
-  path: '/server',
+const PickerRoute = PickerRouteImport.update({
+  id: '/picker',
+  path: '/picker',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LogRoute = LogRouteImport.update({
-  id: '/log',
-  path: '/log',
+const GamePathRoute = GamePathRouteImport.update({
+  id: '/game/$path',
+  path: '/game/$path',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/log': typeof LogRoute
-  '/server': typeof ServerRoute
+  '/picker': typeof PickerRoute
+  '/game/$path': typeof GamePathRoute
 }
 export interface FileRoutesByTo {
-  '/log': typeof LogRoute
-  '/server': typeof ServerRoute
+  '/picker': typeof PickerRoute
+  '/game/$path': typeof GamePathRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/log': typeof LogRoute
-  '/server': typeof ServerRoute
+  '/picker': typeof PickerRoute
+  '/game/$path': typeof GamePathRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/log' | '/server'
+  fullPaths: '/picker' | '/game/$path'
   fileRoutesByTo: FileRoutesByTo
-  to: '/log' | '/server'
-  id: '__root__' | '/log' | '/server'
+  to: '/picker' | '/game/$path'
+  id: '__root__' | '/picker' | '/game/$path'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  LogRoute: typeof LogRoute
-  ServerRoute: typeof ServerRoute
+  PickerRoute: typeof PickerRoute
+  GamePathRoute: typeof GamePathRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/server': {
-      id: '/server'
-      path: '/server'
-      fullPath: '/server'
-      preLoaderRoute: typeof ServerRouteImport
+    '/picker': {
+      id: '/picker'
+      path: '/picker'
+      fullPath: '/picker'
+      preLoaderRoute: typeof PickerRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/log': {
-      id: '/log'
-      path: '/log'
-      fullPath: '/log'
-      preLoaderRoute: typeof LogRouteImport
+    '/game/$path': {
+      id: '/game/$path'
+      path: '/game/$path'
+      fullPath: '/game/$path'
+      preLoaderRoute: typeof GamePathRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  LogRoute: LogRoute,
-  ServerRoute: ServerRoute,
+  PickerRoute: PickerRoute,
+  GamePathRoute: GamePathRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

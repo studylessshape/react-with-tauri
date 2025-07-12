@@ -1,58 +1,34 @@
-import GearIcon from "@rsuite/icons/Gear";
-import GithubIcon from "../components/icons/Github";
 import {
     createRootRoute,
     Outlet,
-    Route as RouteType,
     useLocation,
     useNavigate,
-    useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { useMemo } from "react";
-import { CustomProvider, IconButton, Stack, Tooltip, Whisper } from "rsuite";
-import { Container, Content, Footer, Header, Sidebar } from "rsuite";
-import { Nav, Sidenav } from "rsuite";
+import { CustomProvider } from "rsuite";
+import { Container, Content } from "rsuite";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { Menu } from "@tauri-apps/api/menu";
+import { useEffect } from "react";
+import { openPicker } from "../core/open";
 
 export const Route = createRootRoute({
     component: RootComponent,
+    notFoundComponent: (props) => (
+        <div>
+            <div>Not Found</div>
+            <div>{props.data as any}</div>
+        </div>
+    ),
 });
 
 function RootComponent() {
     const location = useLocation();
     const navigate = useNavigate();
+
     if (location.pathname == "/") {
-        navigate({ to: "/server" });
-        return;
+        navigate({ to: "/picker" });
     }
-    const router = useRouter();
-    const menuItems = useMemo(() => {
-        const props = Object.getOwnPropertyNames(router.routesByPath);
-        const routes: any = router.routesByPath;
-        return props.map((p) => routes[p] as RouteType).sort((a, b) => {
-            const aIndex = a.options.staticData?.order;
-            const bIndex = b.options.staticData?.order;
-            if (aIndex == undefined || bIndex == undefined) {
-                return aIndex ?? bIndex ?? 0;
-            }
-            return aIndex - bIndex;
-        }).map((route) => {
-            return (
-                <Nav.Item
-                    key={route.fullPath}
-                    eventKey={route.fullPath}
-                    icon={route.options.staticData?.icon}
-                    onClick={() => {
-                        navigate({ to: route.fullPath.toString() });
-                    }}
-                >
-                    {route.options.staticData?.name}
-                </Nav.Item>
-            );
-        });
-    }, [router.routesByPath]);
 
     return (
         <CustomProvider theme="dark">
@@ -65,62 +41,6 @@ function RootComponent() {
                     flexDirection: "row",
                 }}
             >
-                <Sidebar
-                    style={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        width: "fit-content",
-                        flex: "",
-                        borderRightWidth: 2,
-                        borderRightColor: "#8080805e",
-                        borderRightStyle: "solid",
-                    }}
-                    collapsible
-                >
-                    <OverlayScrollbarsComponent
-                        style={{ flexGrow: 1 }}
-                        options={{
-                            scrollbars: {
-                                theme: "os-theme-light",
-                                autoHide: "leave",
-                            },
-                        }}
-                    >
-                        <Sidenav
-                            expanded={false}
-                            appearance="subtle"
-                        >
-                            <Sidenav.Body>
-                                <Nav activeKey={location.pathname}>
-                                    {menuItems}
-                                </Nav>
-                            </Sidenav.Body>
-                        </Sidenav>
-                    </OverlayScrollbarsComponent>
-                    <Stack
-                        justifyContent="center"
-                        direction="column"
-                        style={{ marginBottom: 10 }}
-                        spacing={10}
-                    >
-                        <IconButton appearance="subtle" icon={<GearIcon />} />
-                        <Whisper
-                            placement="top"
-                            trigger="hover"
-                            speaker={<Tooltip>Github</Tooltip>}
-                        >
-                            <IconButton
-                                appearance="subtle"
-                                icon={<GithubIcon />}
-                                onClick={async () => {
-                                    const githubUrl = "https://github.com/studylessshape/react-with-tauri";
-                                    await openUrl(githubUrl).catch(_ => window.open(githubUrl));
-                                }}
-                            />
-                        </Whisper>
-                    </Stack>
-                </Sidebar>
                 <OverlayScrollbarsComponent
                     style={{ flexGrow: 1 }}
                     options={{
