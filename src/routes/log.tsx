@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import IconFont from "../components/IconFont";
 import { useEffect, useRef, useState } from "react";
-import { open } from '@tauri-apps/plugin-dialog';
+import { open } from "@tauri-apps/plugin-dialog";
+import { invoke } from "@tauri-apps/api/core";
+import { Button, Stack } from "rsuite";
 
 export const Route = createFileRoute("/log")({
     component: RouteComponent,
@@ -15,7 +17,10 @@ export const Route = createFileRoute("/log")({
 function RouteComponent() {
     const [player, setPlayer] = useState(undefined as HTMLElement | undefined);
     const divRef = useRef(null);
+    const openFileDivRef = useRef(null);
+
     useEffect(() => {
+        // @ts-ignore
         const ruffle = window.RufflePlayer.newest();
         const newPlayer = ruffle.createPlayer() as HTMLElement;
         if (divRef.current != null) {
@@ -28,11 +33,38 @@ function RouteComponent() {
             }
         }
     }, [divRef]);
+
+    async function openClick() {
+        const filePath = await open({
+            multiple: false,
+            directory: false,
+            filters: [{ name: "Flash(*.swf)", extensions: ["swf"] }],
+        });
+        if (filePath == null) return;
+
+        const loadData = await invoke("open_file", { path: filePath });
+        // @ts-ignore
+        player.ruffle().load({ data: loadData });
+
+        const openFileDiv = openFileDivRef.current as any as HTMLElement;
+        openFileDiv.style.display = "none";
+    }
+
     return (
-        <div
-            ref={divRef}
-            style={{ width: "100%", height: "100%", display: "flex" }}
-        >
+        <div style={{ width: "100%", height: "100%", display: "flex" }}>
+            <Stack
+                ref={openFileDivRef}
+                style={{ position: "fixed", zIndex: 10000, width: "100%", height: "100%" }}
+                alignItems="center"
+                justifyContent="center"
+            >
+                <Button onClick={openClick}>Click To Select file</Button>
+            </Stack>
+            <div
+                ref={divRef}
+                style={{ width: "100%", height: "100%", display: "flex" }}
+            >
+            </div>
         </div>
     );
 }
