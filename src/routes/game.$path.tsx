@@ -1,19 +1,23 @@
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { RufflePlayer } from "../core/ruffle";
+import { PlayerElement, PlayerV1 } from "../core/ruffle/player";
 
 export const Route = createFileRoute("/game/$path")({
     component: RouteComponent,
-    loader: async ({ params }) => {
-        return await invoke<number[]>("open_file", { path: params.path });
-    },
 });
 
 function RouteComponent() {
-    const [player, setPlayer] = useState(undefined as HTMLElement | undefined);
+    const [player, setPlayer] = useState(
+        undefined as PlayerElement | undefined,
+    );
+    const [rufflePlayer, setRufflePlayer] = useState(
+        undefined as PlayerV1 | undefined,
+    );
     const divRef = useRef(null);
-    const loaded = useLoaderData({ from: "/game/$path" });
+
+    const { path } = Route.useParams();
 
     useEffect(() => {
         const ruffle = RufflePlayer().newest();
@@ -24,10 +28,15 @@ function RouteComponent() {
             const element = divRef.current as any as HTMLDivElement;
             newPlayer.style.width = "100%";
             newPlayer.style.height = "100%";
-            if (player === undefined && element.children.length == 0) {
+            if (
+                player === undefined && rufflePlayer == undefined &&
+                element.children.length == 0
+            ) {
                 element.appendChild(newPlayer);
+                const newRufflePlayer = newPlayer.ruffle();
                 setPlayer(newPlayer);
-                newPlayer.ruffle().load({ data: loaded });
+                setRufflePlayer(newRufflePlayer);
+                newRufflePlayer.load(convertFileSrc(path));
             }
         }
     }, [divRef]);
