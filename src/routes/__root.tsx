@@ -1,16 +1,8 @@
-import {
-    createRootRoute,
-    Outlet,
-    useLocation,
-    useNavigate,
-} from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { CustomProvider } from "rsuite";
 import { Container, Content } from "rsuite";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
-import { Menu } from "@tauri-apps/api/menu";
-import { useEffect } from "react";
-import { openPicker } from "../core/open";
 
 export const Route = createRootRoute({
     component: RootComponent,
@@ -23,13 +15,6 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-    const location = useLocation();
-    const navigate = useNavigate();
-
-    if (location.pathname == "/") {
-        navigate({ to: "/picker" });
-    }
-
     return (
         <CustomProvider theme="dark">
             <Container
@@ -40,6 +25,7 @@ function RootComponent() {
                     display: "flex",
                     flexDirection: "row",
                 }}
+                onDragOver={(e) => e.preventDefault()}
             >
                 <OverlayScrollbarsComponent
                     style={{ flexGrow: 1 }}

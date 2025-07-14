@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { RufflePlayer } from "../core/ruffle";
 import { PlayerElement, PlayerV1 } from "../core/ruffle/player";
+import { useStore } from "../core/store";
 
 export const Route = createFileRoute("/game/$path")({
     component: RouteComponent,
@@ -18,6 +19,7 @@ function RouteComponent() {
     const divRef = useRef(null);
 
     const { path } = Route.useParams();
+    const swfData = useStore((state) => state.data);
 
     useEffect(() => {
         const ruffle = RufflePlayer().newest();
@@ -36,7 +38,11 @@ function RouteComponent() {
                 const newRufflePlayer = newPlayer.ruffle();
                 setPlayer(newPlayer);
                 setRufflePlayer(newRufflePlayer);
-                newRufflePlayer.load(convertFileSrc(path));
+                if (swfData) {
+                    newRufflePlayer.load({ data: swfData });
+                } else {
+                    newRufflePlayer.load(convertFileSrc(path));
+                }
             }
         }
     }, [divRef]);

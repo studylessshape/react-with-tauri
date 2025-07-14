@@ -9,12 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PickerRouteImport } from './routes/picker'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as GamePathRouteImport } from './routes/game.$path'
 
-const PickerRoute = PickerRouteImport.update({
-  id: '/picker',
-  path: '/picker',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GamePathRoute = GamePathRouteImport.update({
@@ -24,38 +24,38 @@ const GamePathRoute = GamePathRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/picker': typeof PickerRoute
+  '/': typeof IndexRoute
   '/game/$path': typeof GamePathRoute
 }
 export interface FileRoutesByTo {
-  '/picker': typeof PickerRoute
+  '/': typeof IndexRoute
   '/game/$path': typeof GamePathRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/picker': typeof PickerRoute
+  '/': typeof IndexRoute
   '/game/$path': typeof GamePathRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/picker' | '/game/$path'
+  fullPaths: '/' | '/game/$path'
   fileRoutesByTo: FileRoutesByTo
-  to: '/picker' | '/game/$path'
-  id: '__root__' | '/picker' | '/game/$path'
+  to: '/' | '/game/$path'
+  id: '__root__' | '/' | '/game/$path'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  PickerRoute: typeof PickerRoute
+  IndexRoute: typeof IndexRoute
   GamePathRoute: typeof GamePathRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/picker': {
-      id: '/picker'
-      path: '/picker'
-      fullPath: '/picker'
-      preLoaderRoute: typeof PickerRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/game/$path': {
@@ -69,7 +69,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  PickerRoute: PickerRoute,
+  IndexRoute: IndexRoute,
   GamePathRoute: GamePathRoute,
 }
 export const routeTree = rootRouteImport
