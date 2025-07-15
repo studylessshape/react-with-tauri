@@ -8,7 +8,7 @@ export const Route = createRootRoute({
     component: RootComponent,
     notFoundComponent: (props) => (
         <div>
-            <div>Not Found</div>
+            <div>Not Found: {document.location.pathname}</div>
             <div>{props.data as any}</div>
         </div>
     ),

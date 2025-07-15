@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { RufflePlayer } from "../core/ruffle";
 import { PlayerElement, PlayerV1 } from "../core/ruffle/player";
-import { useStore } from "../core/store";
+import { useSwfState } from "../core/store";
 
-export const Route = createFileRoute("/game/$path")({
+export const Route = createFileRoute("/game")({
     component: RouteComponent,
 });
 
@@ -17,9 +17,8 @@ function RouteComponent() {
         undefined as PlayerV1 | undefined,
     );
     const divRef = useRef(null);
-
-    const { path } = Route.useParams();
-    const swfData = useStore((state) => state.data);
+    const state = useSwfState();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const ruffle = RufflePlayer().newest();
@@ -38,10 +37,12 @@ function RouteComponent() {
                 const newRufflePlayer = newPlayer.ruffle();
                 setPlayer(newPlayer);
                 setRufflePlayer(newRufflePlayer);
-                if (swfData) {
-                    newRufflePlayer.load({ data: swfData });
+                if (state.data) {
+                    newRufflePlayer.load({ data: state.data });
+                } else if (state.path) {
+                    newRufflePlayer.load(convertFileSrc(state.path.toString()));
                 } else {
-                    newRufflePlayer.load(convertFileSrc(path));
+                    navigate({ to: ".." });
                 }
             }
         }

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button, Stack } from "rsuite";
 import { openPicker } from "../core/open";
-import { useStore } from "../core/store";
+import { useSwfState } from "../core/store";
 import { DragEvent } from "react";
 
 export const Route = createFileRoute("/")({
@@ -19,7 +19,9 @@ function getFileListFromDropEvent(e: DragEvent) {
 
 function RouteComponent() {
     const navigate = useNavigate();
-    const updateData = useStore((state) => state.updateData);
+    const setData = useSwfState((state) => state.updateData);
+    const setPath = useSwfState((state) => state.updatePath);
+    const state = useSwfState();
 
     async function handleOnDrop(e: DragEvent) {
         e.preventDefault();
@@ -29,8 +31,8 @@ function RouteComponent() {
         const file = files[0];
         if (file?.name.endsWith(".swf")) {
             file.arrayBuffer().then((val) => {
-                updateData(val);
-                navigate({ to: `/game/${file.name}` });
+                setData(val);
+                navigate({ to: "/game" });
             });
         }
     }
@@ -45,8 +47,8 @@ function RouteComponent() {
             <Button
                 onClick={async () =>
                     await openPicker((picked) => {
-                        updateData(undefined);
-                        navigate({ to: `/game/${picked}` });
+                        setPath(picked);
+                        navigate({ to: "/game" });
                     })}
             >
                 Select&ensp;<code>.swf</code>&ensp;File
