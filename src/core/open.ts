@@ -4,7 +4,7 @@ export async function openPicker(action: (picked: String) => void) {
     const picked = await open({
         multiple: false,
         directory: false,
-        filters: [{ name: "Flash(*.swf)", extensions: ["swf"] }],
+        filters: [{ name: "Flash", extensions: ["swf"] }],
     });
     if (picked == null) {
         return;

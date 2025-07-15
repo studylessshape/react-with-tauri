@@ -37,10 +37,8 @@ function RouteComponent() {
                 const newRufflePlayer = newPlayer.ruffle();
                 setPlayer(newPlayer);
                 setRufflePlayer(newRufflePlayer);
-                if (state.data) {
-                    newRufflePlayer.load({ data: state.data });
-                } else if (state.path) {
-                    newRufflePlayer.load(convertFileSrc(state.path.toString()));
+                if (state.path) {
+                    newRufflePlayer.load(state.path.toString());
                 } else {
                     navigate({ to: ".." });
                 }

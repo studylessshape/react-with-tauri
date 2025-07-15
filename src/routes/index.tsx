@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button, Stack } from "rsuite";
-import { openPicker } from "../core/open";
 import { useSwfState } from "../core/store";
-import { DragEvent } from "react";
+import { ChangeEvent, DragEvent, useRef } from "react";
+import { platform } from "@tauri-apps/plugin-os";
+import { message } from "@tauri-apps/plugin-dialog";
 
 export const Route = createFileRoute("/")({
     component: RouteComponent,
@@ -19,21 +20,45 @@ function getFileListFromDropEvent(e: DragEvent) {
 
 function RouteComponent() {
     const navigate = useNavigate();
-    const setData = useSwfState((state) => state.updateData);
+    const path = useSwfState((state) => state.path);
     const setPath = useSwfState((state) => state.updatePath);
-    const state = useSwfState();
+    const accept = platform() == "android" ? undefined : ".swf";
+    const inputFileRef = useRef(null as HTMLInputElement | null);
+
+    async function enterGame(file: File | undefined) {
+        if (file) {
+            if (file.name.endsWith(".swf")) {
+                if (path) {
+                    URL.revokeObjectURL(path.toString());
+                }
+                setPath(URL.createObjectURL(file));
+                navigate({ to: "/game" });
+            } else {
+                await message("File extension must be swf!", {
+                    title: "Open failed",
+                    kind: "error",
+                });
+            }
+        }
+    }
 
     async function handleOnDrop(e: DragEvent) {
         e.preventDefault();
 
         const files = getFileListFromDropEvent(e);
+        await enterGame(files[0]);
+    }
 
-        const file = files[0];
-        if (file?.name.endsWith(".swf")) {
-            file.arrayBuffer().then((val) => {
-                setData(val);
-                navigate({ to: "/game" });
-            });
+    async function handleClick() {
+        if (inputFileRef.current) {
+            const element = inputFileRef.current;
+            element.click();
+        }
+    }
+
+    async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+        if (e.target.files) {
+            await enterGame(e.target.files[0]);
         }
     }
 
@@ -44,12 +69,15 @@ function RouteComponent() {
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleOnDrop}
         >
+            <input
+                type="file"
+                style={{ display: "none" }}
+                accept={accept}
+                ref={inputFileRef}
+                onChange={handleFileChange}
+            />
             <Button
-                onClick={async () =>
-                    await openPicker((picked) => {
-                        setPath(picked);
-                        navigate({ to: "/game" });
-                    })}
+                onClick={handleClick}
             >
                 Select&ensp;<code>.swf</code>&ensp;File
             </Button>
