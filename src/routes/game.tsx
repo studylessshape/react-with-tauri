@@ -17,10 +17,15 @@ function RouteComponent() {
         undefined as PlayerV1 | undefined,
     );
     const divRef = useRef(null);
-    const state = useSwfState();
+    const file = useSwfState((state) => state.file);
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!file) {
+            navigate({ to: ".." });
+            return;
+        }
+
         const ruffle = RufflePlayer().newest();
         if (ruffle == null) return;
 
@@ -37,11 +42,9 @@ function RouteComponent() {
                 const newRufflePlayer = newPlayer.ruffle();
                 setPlayer(newPlayer);
                 setRufflePlayer(newRufflePlayer);
-                if (state.path) {
-                    newRufflePlayer.load(state.path.toString());
-                } else {
-                    navigate({ to: ".." });
-                }
+                file.arrayBuffer().then((buffs) =>
+                    newRufflePlayer.load({ data: buffs })
+                );
             }
         }
     }, [divRef]);

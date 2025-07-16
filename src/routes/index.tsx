@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Button, Stack } from "rsuite";
+import { Button, List, Stack } from "rsuite";
 import { useSwfState } from "../core/store";
 import { ChangeEvent, DragEvent, useRef } from "react";
 import { platform } from "@tauri-apps/plugin-os";
@@ -20,18 +20,15 @@ function getFileListFromDropEvent(e: DragEvent) {
 
 function RouteComponent() {
     const navigate = useNavigate();
-    const path = useSwfState((state) => state.path);
-    const setPath = useSwfState((state) => state.updatePath);
+    const setFile = useSwfState((state) => state.updateFile);
     const accept = platform() == "android" ? undefined : ".swf";
     const inputFileRef = useRef(null as HTMLInputElement | null);
+    const recentFiles = useSwfState((state) => state.recentFiles);
 
     async function enterGame(file: File | undefined) {
         if (file) {
             if (file.name.endsWith(".swf")) {
-                if (path) {
-                    URL.revokeObjectURL(path.toString());
-                }
-                setPath(URL.createObjectURL(file));
+                setFile(file);
                 navigate({ to: "/game" });
             } else {
                 await message("File extension must be swf!", {
@@ -68,6 +65,7 @@ function RouteComponent() {
             justifyContent="center"
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleOnDrop}
+            direction="column"
         >
             <input
                 type="file"
@@ -81,6 +79,19 @@ function RouteComponent() {
             >
                 Select&ensp;<code>.swf</code>&ensp;File
             </Button>
+            <List>
+                {recentFiles.map((file, index) => (
+                    <List.Item key={index} index={index}>
+                        <Button
+                            appearance="link"
+                            onClick={async () =>
+                                await enterGame(file)}
+                        >
+                            {file.name}
+                        </Button>
+                    </List.Item>
+                ))}
+            </List>
         </Stack>
     );
 }

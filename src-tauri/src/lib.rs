@@ -1,10 +1,12 @@
-use std::fs::{self};
+mod fs;
+
+use std::fs::{self as std_fs};
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 
 #[tauri::command]
 fn open_file(path: &str) -> tauri::Result<Vec<u8>> {
-    fs::read(path).map_err(tauri::Error::Io)
+    std_fs::read(path).map_err(tauri::Error::Io)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
