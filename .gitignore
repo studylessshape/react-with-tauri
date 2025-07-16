@@ -25,3 +25,4 @@ dist-ssr
 
 .tanstack
 src-tauri/gen/android/keystore.properties
+bun.lock
