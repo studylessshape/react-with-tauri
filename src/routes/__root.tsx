@@ -27,19 +27,9 @@ function RootComponent() {
                 }}
                 onDragOver={(e) => e.preventDefault()}
             >
-                <OverlayScrollbarsComponent
-                    style={{ flexGrow: 1 }}
-                    options={{
-                        scrollbars: {
-                            visibility: "auto",
-                            theme: "os-theme-light",
-                        },
-                    }}
-                >
-                    <Content>
-                        <Outlet />
-                    </Content>
-                </OverlayScrollbarsComponent>
+                <Content style={{ flex: "1" }}>
+                    <Outlet />
+                </Content>
                 <TanStackRouterDevtools position="bottom-right" />
             </Container>
         </CustomProvider>

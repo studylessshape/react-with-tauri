@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { convertFileSrc } from "@tauri-apps/api/core";
 import { RufflePlayer } from "../core/ruffle";
 import { PlayerElement, PlayerV1 } from "../core/ruffle/player";
 import { useSwfState } from "../core/store";

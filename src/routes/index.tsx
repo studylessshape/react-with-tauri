@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button, List, Stack } from "rsuite";
 import { useSwfState } from "../core/store";
 import { ChangeEvent, DragEvent, useRef } from "react";
-import { platform } from "@tauri-apps/plugin-os";
+import platform from "platform"
 import { message } from "@tauri-apps/plugin-dialog";
 
 export const Route = createFileRoute("/")({
@@ -21,7 +21,7 @@ function getFileListFromDropEvent(e: DragEvent) {
 function RouteComponent() {
     const navigate = useNavigate();
     const setFile = useSwfState((state) => state.updateFile);
-    const accept = platform() == "android" ? undefined : ".swf";
+    const accept = platform.os?.family == "Android" ? undefined : ".swf";
     const inputFileRef = useRef(null as HTMLInputElement | null);
     const recentFiles = useSwfState((state) => state.recentFiles);
 
